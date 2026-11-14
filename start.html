@@ -11,6 +11,13 @@
 </head>
 <body>
     <main class="panel">
+        <div class="avatar-wrap">
+            <img id="avatar" class="avatar" alt="Your dog" hidden>
+            <span id="avatarFallback" class="avatar">&#128054;</span>
+            <p class="breed" id="breed"></p>
+            <button class="ghost small" id="newDogBtn" type="button">New dog</button>
+        </div>
+
         <h1>Ready to run?</h1>
         <p class="sub" id="welcome"></p>
 
@@ -27,8 +34,8 @@
 
         <p class="error" id="msg"></p>
         <button id="playBtn">Start game</button>
-        <button class="ghost" id="rankBtn">Leaderboard</button>
-        <button class="ghost" id="logoutBtn">Log out</button>
+        <button class="ghost" id="rankBtn" type="button">Rank board</button>
+        <button class="ghost" id="logoutBtn" type="button">Log out</button>
     </main>
 
     <script type="module" src="start.js"></script>
