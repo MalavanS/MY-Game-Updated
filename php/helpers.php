@@ -7,6 +7,7 @@ ini_set('log_errors', '1');
 ob_start();
 
 require __DIR__ . '/config.php';
+require __DIR__ . '/mailer.php';
 header('Content-Type: application/json; charset=utf-8');
 header('Cache-Control: no-store');
 
@@ -15,7 +16,8 @@ set_exception_handler(function ($e) {
     while (ob_get_level()) ob_end_clean();
     http_response_code(500);
     $msg = 'Server error.';
-    if ($e instanceof PDOException) {
+    // Only show internals while testing
+    if (DEV_MODE && $e instanceof PDOException) {
         $msg = 'Database error: ' . $e->getMessage() . ' (is MySQL running and was schema.sql imported?)';
     }
     echo json_encode(['ok' => false, 'error' => $msg]);
@@ -79,8 +81,23 @@ function send_otp(array $user): array {
     $pdo->prepare('INSERT INTO otp_codes (user_id, code_hash, expires_at) VALUES (?, ?, NOW() + INTERVAL 5 MINUTE)')
         ->execute([$user['id'], hash('sha256', $code)]);
 
-    @mail($user['email'], 'Your game verification code',
-        "Your code is $code\nIt expires in 5 minutes.", 'From: ' . MAIL_FROM);
+    // Testing without any mail account: skip sending and show the code on the page
+    if (DEV_MODE && SMTP_USER === '') return ['devCode' => $code];
+
+    $text = "Your verification code is $code\nIt expires in 5 minutes.\nIf you did not request it, ignore this email.";
+    $html = '<div style="font-family:Arial,sans-serif;max-width:420px;margin:auto;padding:24px;border:1px solid #ddd;border-radius:12px">'
+          . '<h2 style="margin:0 0 12px">Super Dog Escape</h2>'
+          . '<p>Your verification code is:</p>'
+          . '<p style="font-size:32px;letter-spacing:6px;font-weight:bold;margin:12px 0">' . $code . '</p>'
+          . '<p style="color:#666;font-size:13px">It expires in 5 minutes. If you did not request it, ignore this email.</p></div>';
+
+    $error = send_mail($user['email'], 'Your verification code: ' . $code, $text, $html);
+    if ($error !== null) {
+        // Remove the unsent code so the 30 s cooldown doesn't block an immediate retry
+        $pdo->prepare('DELETE FROM otp_codes WHERE user_id = ?')->execute([$user['id']]);
+        fail('We could not send the verification email. ' .
+             (DEV_MODE ? $error : 'Try signing in again in a minute to get a new code.'), 502);
+    }
 
     return DEV_MODE ? ['devCode' => $code] : [];
 }
