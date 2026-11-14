@@ -19,20 +19,37 @@
 
 }
 
-html, body {
-    margin: 0;
-    height: 100%;
-    overflow: hidden;
-    background: #050b14;
+
+
+#loading {
+    position: fixed;
+    inset: 0;
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    color: #fff;
+    font-family: Helvetica, Arial, sans-serif;
+    background: #0e1a14;
+    transition: opacity 0.4s;
 }
 
-#canvas1 {
-    display: block;
-    width: 100vw;
-    height: 100vh;
-    border: none;
+#loading.done {
+    opacity: 0;
+    pointer-events: none;
 }
 
-#player {
-    display: none;
+#loadingDog {
+    width: min(70vw, 320px);
+    height: min(70vw, 320px);
+    object-fit: cover;
+    border: 5px solid #f3d98b;
+    border-radius: 16px;
+}
+
+#loadingBreed {
+    color: #f3d98b;
+    font-weight: bold;
 }
