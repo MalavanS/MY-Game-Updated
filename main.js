@@ -2,6 +2,7 @@ import { Player } from './player.js';
 import { InputHandler } from './input.js';
 import { Background } from './background.js';
 import { Enemy } from './enemies.js';
+import { Atmosphere } from './atmosphere.js';
 import { requireLogin, loseLife, submitScore } from './auth.js';
 
 // Only logged-in players can play
@@ -35,6 +36,7 @@ function initGame() {
             this.input = new InputHandler();
             this.player = new Player(this);
             this.background = new Background(this);
+            this.atmosphere = new Atmosphere(width, height, 5);
             this.enemies = [];
             this.spawnTimer = 0;
             this.spawnInterval = 1500;
@@ -46,6 +48,8 @@ function initGame() {
         }
 
         update(step, dt) {
+            this.atmosphere.update(dt);   // keeps animating even on game over
+
             if (this.state !== 'playing') {
                 if (this.input.keys.includes('Enter')) window.location.href = 'start.html';
                 return;
@@ -94,12 +98,15 @@ function initGame() {
 
         draw(c) {
             this.background.draw(c);
+            this.atmosphere.drawBack(c, 686, 84);   // moon glow, bats, shooting stars
+
             this.enemies.forEach(e => e.draw(c));
 
             // Blink while protected after a hit
             const blink = this.invincible > 0 && Math.floor(this.invincible / 100) % 2 === 0;
             if (!blink) this.player.draw(c);
 
+            this.atmosphere.drawFront(c);           // fog, fireflies, grass
             this.drawUI(c);
         }
 
