@@ -1,0 +1,16 @@
+{
+	"folders": [
+		{
+			"path": "../../../xampp/htdocs/MY-Game-main/assests"
+		},
+		{
+			"path": "../../../xampp/htdocs/MY-Game-main/MY-Game-main"
+		},
+		{
+			"path": "../../../xampp/htdocs/MY-Game-main/php"
+		}
+	],
+	"settings": {
+		"liveServer.settings.multiRootWorkspaceName": "MY-Game-main"
+	}
+}

@@ -1,0 +1,29 @@
+SET default_storage_engine=InnoDB;
+CREATE DATABASE IF NOT EXISTS game_db CHARACTER SET utf8mb4;
+USE game_db;
+
+CREATE TABLE users (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  first_name VARCHAR(50) NOT NULL,
+  last_name VARCHAR(50) NOT NULL,
+  username VARCHAR(30) NOT NULL UNIQUE,
+  email VARCHAR(120) NOT NULL UNIQUE,
+  phone VARCHAR(20) NOT NULL UNIQUE,
+  password_hash VARCHAR(255) NOT NULL,
+  verified TINYINT(1) NOT NULL DEFAULT 0,
+  lives TINYINT NOT NULL DEFAULT 2,
+  best_score INT NOT NULL DEFAULT 0,
+  best_time INT NOT NULL DEFAULT 999999999,  -- ms, tie-breaker (lower is better)
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  INDEX idx_rank (best_score DESC, best_time ASC)
+);
+
+CREATE TABLE otp_codes (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  user_id INT NOT NULL,
+  code_hash CHAR(64) NOT NULL,
+  expires_at DATETIME NOT NULL,
+  attempts TINYINT NOT NULL DEFAULT 0,
+  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);

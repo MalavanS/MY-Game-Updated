@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leaderboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="auth.css">
+    <style>
+        .panel { max-width: 520px; }
+        table { width: 100%; margin-bottom: 18px; border-collapse: collapse; }
+        th, td { padding: 9px 8px; text-align: left; border-bottom: 1px solid var(--fern); }
+        th { color: var(--moon); }
+        tr.me td { color: var(--moon); font-weight: 600; background: rgba(243, 217, 139, 0.1); }
+        .yours { margin-bottom: 18px; font-weight: 600; color: var(--moon); }
+    </style>
+</head>
+<body>
+    <main class="panel">
+        <h1>Leaderboard</h1>
+        <p class="sub">Top 10 players. Highest score wins; ties go to the fastest time.</p>
+
+        <table>
+            <thead><tr><th>#</th><th>Player</th><th>Score</th><th>Time</th></tr></thead>
+            <tbody id="rows"></tbody>
+        </table>
+
+        <p class="yours" id="yours"></p>
+        <p class="error" id="msg" role="alert"></p>
+        <button id="backBtn">Back to start page</button>
+    </main>
+
+    <script type="module" src="rank.js"></script>
+</body>
+</html>
